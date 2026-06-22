@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup CERNE I</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-text">
+          <strong>Mockup · CERNE I</strong>
+        </div>
+      </div>
+
+      <nav class="nav" id="nav"></nav>
+
+      <div class="sidebar-foot">
+        <div class="org-pill">
+          <span class="dot ok"></span>
+          <div>
+            <strong id="orgName">Incubadora Espaço Empreendedor</strong>
+            <small>Nível CERNE 1 · Em operação</small>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <header class="topbar">
+        <button class="hamburger" id="hamburger" aria-label="menu">☰</button>
+        <div class="crumbs" id="crumbs"></div>
+        <div class="topbar-right">
+          <div class="role-switch" id="roleSwitch">
+            <span class="role-label">Perfil:</span>
+            <button class="role-opt active" data-role="gestor">Gestor da incubadora</button>
+            <button class="role-opt" data-role="admin">Administrador da plataforma</button>
+          </div>
+          <div class="avatar" id="avatar" title="Perfil">GI</div>
+        </div>
+      </header>
+
+      <main class="content" id="view"></main>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal-head">
+        <h3 id="modalTitle">Título</h3>
+        <button class="icon-btn" id="modalClose" aria-label="fechar">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-foot" id="modalFoot"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
