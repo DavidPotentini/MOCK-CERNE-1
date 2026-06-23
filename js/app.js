@@ -353,8 +353,8 @@ VIEWS.incubadora = () => {
   <div class="card" style="margin-top:16px">
     <div class="card-head"><h3>Empreendimentos apoiados</h3>
       <span class="sub">criação e edição — visualização completa em <a href="#/empreendimentos">Empreendimentos Apoiados</a></span>
-      <div class="right">${cicloEmFoco().status==="Ativo"?`<button class="btn btn-sm btn-primary" onclick="act.manterEmpreendimento()">+ Empreendimento</button>`:""}</div></div>
-    <div class="card-pad" style="padding-bottom:0"><div class="note" style="margin:0 0 12px"><span>🚀</span><div>Empreendimentos do <b>ciclo em foco: ${cicloEmFoco().nome}</b>. ${cicloEmFoco().status==="Ativo"?"Inclua e edite aqui; a tela <i>Empreendimentos Apoiados</i> é só visualização.<br><b>Gerenciar</b> abre a ficha completa — onde você <b>edita os dados</b>, gerencia <b>equipe e papéis</b> e vê o <b>monitoramento</b>.":"<b>Ciclo encerrado — somente consulta.</b>"}</div></div></div>
+      <div class="right"><button class="btn btn-sm btn-primary" onclick="act.manterEmpreendimento()">+ Empreendimento</button></div></div>
+    <div class="card-pad" style="padding-bottom:0"><div class="note" style="margin:0 0 12px"><span>🚀</span><div>Empreendimentos do <b>ciclo em foco: ${cicloEmFoco().nome}</b>. Inclua e edite aqui; a tela <i>Empreendimentos Apoiados</i> é só visualização.<br><b>Gerenciar</b> abre a ficha completa — onde você <b>edita os dados</b>, gerencia <b>equipe e papéis</b> e vê o <b>monitoramento</b>.</div></div></div>
     <div class="table-wrap"><table class="tbl">
       <thead><tr><th>Empreendimento</th><th>Modalidade física</th><th>Estágio</th><th>Situação</th><th></th></tr></thead>
       <tbody>${empreendimentosDoCicloFoco().map(e=>`<tr>
@@ -620,16 +620,16 @@ VIEWS.modelos.after = () => { bindTree(); bindToggleAll("modToggleAll"); };
 /* =================== PLANEJAMENTO =================== */
 VIEWS.planejamento = () => {
   const ciclo = cicloEmFoco();
-  const ed = ciclo.status === "Ativo"; // ciclo encerrado = somente consulta histórica
+  const ed = true; // ações sempre disponíveis
   const p = planoDoCicloFoco();
   const byProc = {};
   DB.atividadesPlanejadas.filter(a=>a.plano===p.id).forEach(a=>{ (byProc[a.processo]=byProc[a.processo]||[]).push(a); });
   return head("", "Gerenciar Planejamento Institucional", "Ciclos de planejamento gerados a partir de um modelo publicado. Permite manter os <b>ciclos institucionais</b>, ajustar atividades, atribuir responsáveis, definir prazos e publicar o planejamento do ciclo para acompanhamento operacional.")
   + `
-  <div class="note" style="margin-bottom:16px"><span>🎯</span><div>Mostrando o <b>ciclo em foco: ${ciclo.nome}</b> ${ciclo.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado · consulta</span>'} — a manutenção de ciclos (incluir/editar/encerrar) e a troca de foco ficam em <a href="#/incubadora">Minha Incubadora</a>.</div></div>
+  <div class="note" style="margin-bottom:16px"><span>🎯</span><div>Mostrando o <b>ciclo em foco: ${ciclo.nome}</b> ${ciclo.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado</span>'} — a manutenção de ciclos (incluir/editar/encerrar) e a troca de foco ficam em <a href="#/incubadora">Minha Incubadora</a>.</div></div>
   <div class="note" style="margin-bottom:16px"><span>⟳</span><div>O planejamento do <b>${ciclo.nome}</b> (${ciclo.status==="Ativo"?"ativo":"encerrado — histórico"}) foi <b>gerado do modelo “${DB.modelos[0].nome}”</b>: as atividades padrão do modelo viraram atividades do ciclo, herdando processo e prática, e recebendo <b>responsável e prazo</b> reais. Cadeia<b>Prática</b> (metodologia) → <b>Atividade padrão</b> (modelo) → <b>Atividade do ciclo</b> (planejamento).</div></div>
   <div class="toolbar">
-    <span class="t-sub">Planejamento do ciclo em foco<b>${ciclo.nome}</b> ${ciclo.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado · consulta</span>'}</span>
+    <span class="t-sub">Planejamento do ciclo em foco<b>${ciclo.nome}</b> ${ciclo.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado</span>'}</span>
     <span class="spacer"></span>
     ${ed?`<button class="btn" onclick="act.gerarDeModelo()">⟳ Gerar de modelo</button>`:""}
     <button class="btn btn-primary" onclick="act.consultarPlano()">Consultar publicação</button>
@@ -678,13 +678,12 @@ VIEWS.planejamento.after = () => { bindTree(); bindToggleAll("planToggleAll"); }
 let execFilter = "Todas";
 VIEWS.execucao = () => {
   const ciclo = cicloEmFoco();
-  const ed = ciclo.status === "Ativo"; // ciclo encerrado = somente consulta histórica
+  const ed = true; // ações sempre disponíveis
   const atividades = atividadesDoCicloFoco();
   const pend = atividades.filter(a=>a.status==="Atrasada");
   return head("", "Acompanhar Execução das Práticas CERNE", "Acompanhamento operacional do planejamento publicado: registrar execução de atividades, atualizar situações, registrar observações e encaminhamentos, consultar pendências e atrasos e consolidar a execução por processo e prática.")
   + `
-  <div class="note" style="margin-bottom:16px"><span>🎯</span><div>Acompanhando o <b>ciclo em foco: ${ciclo.nome}</b> ${ciclo.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado · consulta</span>'} — para trocar de ciclo, use o <b>ponto central</b> em <a href="#/incubadora">Minha Incubadora</a>.</div></div>
-  ${ed ? "": `<div class="note warn" style="margin-bottom:16px"><span>🔒</span><div><b>Ciclo encerrado — somente consulta.</b> A execução deste ciclo é <b>histórico preservado</b> e não recebe novos registros.</div></div>`}
+  <div class="note" style="margin-bottom:16px"><span>🎯</span><div>Acompanhando o <b>ciclo em foco: ${ciclo.nome}</b> ${ciclo.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado</span>'} — para trocar de ciclo, use o <b>ponto central</b> em <a href="#/incubadora">Minha Incubadora</a>.</div></div>
   <div class="grid cols-4" style="margin-bottom:18px">
     ${stat("Concluídas", atividades.filter(a=>a.status==="Concluída").length, "", "✅", "green")}
     ${stat("Em andamento", atividades.filter(a=>a.status==="Em andamento").length, "", "⏳", "blue")}
@@ -738,7 +737,7 @@ VIEWS.execucao = () => {
 VIEWS.execucao.after = () => {
   const list = $("#execList");
   let allOpen = true;
-  const ed = cicloEmFoco().status === "Ativo";
+  const ed = true;
   const render = () => {
     const ATIV = atividadesDoCicloFoco();
     const q = ($("#execSearch").value || "").toLowerCase();
@@ -804,12 +803,11 @@ VIEWS.execucao.after = () => {
 let evFilter = "Todas";
 VIEWS.evidencias = () => {
   const ciclo = cicloEmFoco();
-  const ed = ciclo.status === "Ativo"; // ciclo encerrado = somente consulta histórica
+  const ed = true; // ações de evidência sempre disponíveis
   const evs = evidenciasDoCicloFoco();
   return head("", "Gerenciar Evidências e Documentos", "Registro de evidências de execução, anexação e versionamento de documentos, classificação por processo/prática/atividade, validação documental e solicitação de complementação ou correção.")
   + `
-  <div class="note" style="margin-bottom:16px"><span>🎯</span><div>Exibindo evidências do <b>ciclo em foco: ${ciclo.nome}</b> ${ciclo.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado · consulta</span>'} — para trocar de ciclo, use o <b>ponto central</b> em <a href="#/incubadora">Minha Incubadora</a>.</div></div>
-  ${ed ? "": `<div class="note warn" style="margin-bottom:16px"><span>🔒</span><div><b>Ciclo encerrado — somente consulta.</b> As evidências deste ciclo são <b>histórico preservado</b> e não recebem novos registros nem validações.</div></div>`}
+  <div class="note" style="margin-bottom:16px"><span>🎯</span><div>Exibindo evidências do <b>ciclo em foco: ${ciclo.nome}</b> ${ciclo.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado</span>'} — para trocar de ciclo, use o <b>ponto central</b> em <a href="#/incubadora">Minha Incubadora</a>.</div></div>
   <div class="grid cols-4" style="margin-bottom:18px">
     ${stat("Total", evs.length, "", "📎", "purple")}
     ${stat("Validadas", evs.filter(e=>e.status==="Validada").length, "", "✔", "green")}
@@ -829,7 +827,7 @@ VIEWS.evidencias = () => {
   </table></div></div>`;
 };
 VIEWS.evidencias.after = () => {
-  const ed = cicloEmFoco().status === "Ativo";
+  const ed = true;
   const render = () => {
     const rows = evidenciasDoCicloFoco().filter(e=>evFilter==="Todas"||e.status===evFilter);
     $("#evRows").innerHTML = rows.length ? rows.map(e=>{
@@ -865,13 +863,13 @@ function statusIndicador(i) {
   return pct >= 100 ? "Atingida": pct >= 60 ? "Em curso": "Abaixo";
 }
 // Ciclo em foco é editável só quando ATIVO; encerrado = somente consulta
-const indCicloEditavel = () => cicloEmFoco().status === "Ativo";
+const indCicloEditavel = () => true;
 VIEWS.indicadores = () => {
   if (indTab === "registro") indTab = "definicao";
   const foco = cicloEmFoco();
   return head("", "Gerenciar Indicadores e Metas", "Visão de <b>gestão</b> do ciclo de indicadores<b>definir quais indicadores</b> compõem o ciclo, <b>definir metas</b> e <b>consultar o painel</b> consolidado. Cada indicador é <b>vinculado a um ciclo institucional</b>. O <b>registro de resultados</b> é feito na tela <a href=\"#/registroResultados\">Apuração de Indicadores</a>.")
   + `
-  <div class="note" style="margin-bottom:12px"><span>🎯</span><div>Exibindo o <b>ciclo em foco: ${foco.nome}</b> ${foco.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado · consulta</span>'} — para trocar de ciclo, use o <b>ponto central</b> em <a href="#/incubadora">Minha Incubadora</a>. A troca reflete também no Planejamento.</div></div>
+  <div class="note" style="margin-bottom:12px"><span>🎯</span><div>Exibindo o <b>ciclo em foco: ${foco.nome}</b> ${foco.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado</span>'} — para trocar de ciclo, use o <b>ponto central</b> em <a href="#/incubadora">Minha Incubadora</a>. A troca reflete também no Planejamento.</div></div>
   <div class="tabs" id="indTabs">
     <div class="tab ${indTab==='definicao'?'active':''}" data-t="definicao">Indicadores do ciclo</div>
     <div class="tab ${indTab==='metas'?'active':''}" data-t="metas">Metas do ciclo</div>
@@ -1048,7 +1046,7 @@ VIEWS.registroResultados = () => {
   const foco = cicloEmFoco();
   return head("", "Apuração de Indicadores", "Registro dos resultados periódicos dos indicadores do ciclo. Como nas <b>evidências</b>, o lançamento guarda <b>quem registrou</b> o resultado e pode vincular evidências/atividades; a validação ocorre na.")
   + `
-  <div class="note" style="margin-bottom:12px"><span>🎯</span><div>Apurando o <b>ciclo em foco: ${foco.nome}</b> ${foco.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado · consulta</span>'} — para trocar de ciclo, use o <b>ponto central</b> em <a href="#/incubadora">Minha Incubadora</a>.</div></div>
+  <div class="note" style="margin-bottom:12px"><span>🎯</span><div>Apurando o <b>ciclo em foco: ${foco.nome}</b> ${foco.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado</span>'} — para trocar de ciclo, use o <b>ponto central</b> em <a href="#/incubadora">Minha Incubadora</a>.</div></div>
   <div class="note" style="margin-bottom:16px"><span>🔐</span><div>O registro é uma operação <b>autorizada por papel</b> no escopo da incubadora/ciclo. <b>Não há responsável pré-atribuído</b> ao indicador — quem registra fica gravado no lançamento, como nas <a href="#/evidencias">evidências</a>. A <b>definição</b> de indicadores e <b>metas</b> é do gestor, na tela <a href="#/indicadores">Indicadores e Metas</a>.</div></div>
   <div id="acompBody"></div>`;
 };
@@ -1057,12 +1055,11 @@ VIEWS.registroResultados.after = () => {
 };
 function acompWorklist() {
   const ciclo = cicloEmFoco();
-  const ed = ciclo.status === "Ativo"; // ciclo encerrado = somente consulta histórica
+  const ed = true; // ações sempre disponíveis
   const inds = indicadoresDoCiclo(ciclo.id);
   const pend = totalPendencias(inds);
   const semMeta = inds.filter((i) => !temMeta(i)).length;
   return `
-  ${ed ? "": `<div class="note warn" style="margin-bottom:16px"><span>🔒</span><div><b>Ciclo encerrado — somente consulta.</b> Os resultados deste ciclo são <b>histórico preservado</b> e não recebem novos lançamentos. Para registrar resultados, coloque o <b>ciclo ativo</b> em foco em <a href="#/incubadora">Minha Incubadora</a>.</div></div>`}
   <div class="grid cols-3" style="margin-bottom:16px">
     ${stat("Indicadores no ciclo", inds.length, ciclo.nome, "📊", "blue")}
     ${stat("Períodos pendentes", pend, ed ? "apuração encerrada": "sem registro no histórico", pend ? "amber": "slate")}
@@ -1092,12 +1089,11 @@ function acompWorklist() {
 /* =================== OPORTUNIDADES — DESABILITADO ===================
 VIEWS.oportunidades = () => {
   const ciclo = cicloEmFoco();
-  const ed = ciclo.status === "Ativo"; // ciclo encerrado = somente consulta histórica
+  const ed = true; // ações sempre disponíveis
   const ofoco = oportunidadesDoCicloFoco();
   return head("", "Gerenciar Oportunidades de Incubação e Conexão", "Registro, classificação e qualificação de oportunidades de incubação, pré-incubação e conexão. Acompanhamento do funil e conversão em atendimento, conexão ou registro de empreendimento (processo de Sensibilização e Prospecção do CERNE 1).")
   + `
-  <div class="note" style="margin-bottom:16px"><span>🎯</span><div>Funil do <b>ciclo em foco: ${ciclo.nome}</b> ${ciclo.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado · consulta</span>'} — oportunidades são vinculadas ao ciclo institucional (<i>ListarOportunidadesPorCicloInstitucional</i>). Para trocar de ciclo, use o <b>ponto central</b> em <a href="#/incubadora">Minha Incubadora</a>.</div></div>
-  ${ed ? "": `<div class="note warn" style="margin-bottom:16px"><span>🔒</span><div><b>Ciclo encerrado — somente consulta.</b> O funil deste ciclo é <b>histórico preservado</b>.</div></div>`}
+  <div class="note" style="margin-bottom:16px"><span>🎯</span><div>Funil do <b>ciclo em foco: ${ciclo.nome}</b> ${ciclo.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado</span>'} — oportunidades são vinculadas ao ciclo institucional (<i>ListarOportunidadesPorCicloInstitucional</i>). Para trocar de ciclo, use o <b>ponto central</b> em <a href="#/incubadora">Minha Incubadora</a>.</div></div>
   <div class="toolbar"><span class="spacer"></span>${ed?`<button class="btn btn-primary" onclick="act.novaOportunidade()">+ Registrar oportunidade</button>`:""}</div>
   <div class="grid cols-4" style="margin-bottom:18px;align-items:stretch">
     ${DB.funilEtapas.map(etapa=>{
@@ -1121,12 +1117,11 @@ VIEWS.oportunidades = () => {
 /* =================== EMPREENDIMENTOS =================== */
 VIEWS.empreendimentos = () => {
   const ciclo = cicloEmFoco();
-  const ed = ciclo.status === "Ativo"; // ciclo encerrado = somente consulta histórica
+  const ed = true; // ações sempre disponíveis
   const emps = empreendimentosDoCicloFoco();
   return head("", "Empreendimentos Apoiados", "Portfólio dos empreendimentos apoiados para <b>visualização</b>: dados, equipe/sócios, classificação por modalidade física/estágio/setor/situação, vínculo com ciclos e o <b>último monitoramento</b> (eixos CERNE + recomendação). A <b>criação e edição</b> ficam em <a href='#/incubadora'>Minha Incubadora</a>.")
   + `
-  <div class="note" style="margin-bottom:16px"><span>🎯</span><div>Portfólio do <b>ciclo em foco: ${ciclo.nome}</b> ${ciclo.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado · consulta</span>'} — empreendimentos têm vínculo com ciclos de apoio e são consolidados por ciclo. Para trocar de ciclo, use o <b>ponto central</b> em <a href="#/incubadora">Minha Incubadora</a>.</div></div>
-  ${ed ? "": `<div class="note warn" style="margin-bottom:16px"><span>🔒</span><div><b>Ciclo encerrado — somente consulta.</b> O portfólio deste ciclo é <b>histórico preservado</b>.</div></div>`}
+  <div class="note" style="margin-bottom:16px"><span>🎯</span><div>Portfólio do <b>ciclo em foco: ${ciclo.nome}</b> ${ciclo.status==="Ativo"?'<span class="badge badge-green">ativo</span>':'<span class="badge badge-slate">encerrado</span>'} — empreendimentos têm vínculo com ciclos de apoio e são consolidados por ciclo. Para trocar de ciclo, use o <b>ponto central</b> em <a href="#/incubadora">Minha Incubadora</a>.</div></div>
   <div class="grid cols-4" style="margin-bottom:18px">
     ${stat("No portfólio", emps.length, "", "🚀", "blue")}
     ${stat("Ativos", emps.filter(e=>e.situacao==="Ativo").length, "", "🟢", "green")}
@@ -1931,7 +1926,7 @@ const act = {
      listando todos os seus períodos para registrar/editar resultado. */
   registrarResultadosIndicador(indId){
     const i=DB.indicadores.find(x=>x.id===indId);
-    const ed=(DB.ciclos.find(c=>c.id===i.ciclo)||{}).status==="Ativo"; // ciclo encerrado = consulta histórica
+    const ed=true; // ações sempre disponíveis
     if(!temMeta(i)){if(ed)return act.definirMeta(indId);}
     // Quem registrou o resultado do período (como o registradoPor da evidência,)
     const regCell=(pid)=>{const r=(i.registros||{})[pid];return r?`<div class="t-sub">${r.por}</div><div class="t-sub">${fmtDate(r.data)}</div>`:`<span class="t-sub"></span>`;};
@@ -2000,9 +1995,9 @@ const act = {
     <div class="field"><label>Ciclo de apoio</label><select>${DB.ciclos.map(c=>`<option ${(e?e.ciclo===c.id:c.status==="Ativo")?"selected":""}>${c.nome}</option>`).join("")}</select></div></div>
     <div class="note" style="margin-top:4px"><span>👥</span><div>A <b>equipe, sócios e responsáveis do empreendimento</b> (incl. o <b>contato principal</b> perante a incubadora) são mantidos à parte${e?` (${e.pessoas.length} pessoa(s) hoje)`:""}. Aqui ficam apenas os dados básicos e o responsável <b>interno</b>.</div></div>${FORM_NOTE}`,
     footer:confirmFooter(e?'Dados do empreendimento atualizados · evento DadosEmpreendimentoMantidos':'Empreendimento incluído no portfólio')});},
-  verEmpreendimento(id,gerir){const e=DB.empreendimentos.find(x=>x.id===id);const principal=(e.pessoas||[]).find(p=>p.principal);const repLegal=(e.pessoas||[]).find(p=>p.papel==="Representante legal");const cic=DB.ciclos.find(c=>c.id===e.ciclo)||cicloAtivo();const ed=cic.status==="Ativo";const canEdit=ed&&!!gerir;openModal({title:e.nome,wide:true,body:`
+  verEmpreendimento(id,gerir){const e=DB.empreendimentos.find(x=>x.id===id);const principal=(e.pessoas||[]).find(p=>p.principal);const repLegal=(e.pessoas||[]).find(p=>p.papel==="Representante legal");const cic=DB.ciclos.find(c=>c.id===e.ciclo)||cicloAtivo();const ed=true;const canEdit=!!gerir;openModal({title:e.nome,wide:true,body:`
     <div style="display:flex;gap:8px;margin-bottom:14px">${badge(e.situacao)}<span class="badge badge-slate">${e.estagio}</span><span class="badge badge-blue">${e.modalidade}</span><span class="badge badge-purple">${e.modalidadeFisica}</span></div>
-    <dl class="kv"><dt>Setor</dt><dd>${e.setor}</dd><dt>Ciclo de apoio</dt><dd>${cic.nome} ${ed?'':'<span class="badge badge-slate">encerrado · consulta</span>'}</dd><dt>Entrada</dt><dd>${fmtDate(e.entrada)}</dd></dl>
+    <dl class="kv"><dt>Setor</dt><dd>${e.setor}</dd><dt>Ciclo de apoio</dt><dd>${cic.nome} ${ed?'':'<span class="badge badge-slate">encerrado</span>'}</dd><dt>Entrada</dt><dd>${fmtDate(e.entrada)}</dd></dl>
     <h4 style="margin:16px 0 8px">Monitoramento — eixos CERNE <span class="t-sub"></span></h4>
     ${monitSnapshotEmp(e.id)}
     <p class="t-sub" style="margin:8px 0 0">Situação por eixo e recomendação do <b>último monitoramento</b>. Histórico e radar de evolução em <a href="#/monitoramento">Monitoramento das Incubadas</a>.</p>
@@ -2017,7 +2012,7 @@ const act = {
     </dl>
     <div class="toolbar" style="margin:16px 0 8px"><h4 style="margin:0">Equipe, sócios e responsáveis do empreendimento <span class="t-sub"></span></h4>
       <span class="spacer"></span>
-      ${canEdit?`<button class="btn btn-sm btn-primary" onclick="act.manterPessoaEmpreendimento('${e.id}')">+ Incluir pessoa</button>`:`<span class="t-sub">${ed?"somente consulta · gerencie em Minha Incubadora":"ciclo encerrado · somente consulta"}</span>`}</div>
+      ${canEdit?`<button class="btn btn-sm btn-primary" onclick="act.manterPessoaEmpreendimento('${e.id}')">+ Incluir pessoa</button>`:`<span class="t-sub">somente consulta · use <b>Gerenciar</b> para editar</span>`}</div>
     <div class="card"><div class="table-wrap"><table class="tbl">
       <thead><tr><th>Pessoa</th><th>Papel</th><th>Contato</th><th>Situação</th>${canEdit?"<th></th>":""}</tr></thead>
       <tbody>${(e.pessoas||[]).map((p,idx)=>`<tr>

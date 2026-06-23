@@ -1,0 +1,62 @@
+remover: Registrar resultado no plano da incubada (PDE)
+Atualiza o plano com a ação realizada e o resultado obtido (VincularAvaliacaoAoPlanoIncubada
+
+
+trocar notificações por US22
+
+verificar no video: se o cerne define modalidades de pre-incubação e incubação e estágios de tração, validação e ideação
+
+
+
+adicionar situação de correção solicitada no painel operacional
+
+Isso é uma varredura ampla. Deixa eu mapear onde os "US" aparecem (badge do header, crumb, e menções inline no texto) e o volume.
+
+  Ran 1 shell command
+
+280 menções inline + o badge do header (head) + o badge do crumb. Vou ver a head() e amostrar os formatos inline para montar uma remoção limpa:
+
+  Read 1 file, ran 1 shell command
+
+Vou fazer em três frentes: (1) badge do header, (2) badge do crumb, (3) menções inline no texto. Primeiro as duas seguras:
+
+● Update(js/app.js)
+Removed 1 line
+/* ---- Header helper ---- */
+const head = (us, title, desc) => `
+  <div class="page-head">
+    ${us ? `<span class="us-tag">${us}</span>` : ""}
+    <h1>${title}</h1>
+    <p>${desc}</p>
+  </div>`;
+
+● Update(js/app.js)
+Added 1 line, removed 1 line
+  const ctx = ROLE === "admin" ? "Administrador da plataforma" : "Gestor da incubadora";
+
+  $$("#nav a").forEach((a) => a.classList.toggle("active", a.dataset.id === id));
+  $("#crumbs").innerHTML = `<span>${ctx}</span><span class="sep">/</span><b>${nav.crumb || "Painel"}</b>${nav.us?`<span class="sep">·</span><span class="badge badge-soft">${nav.us}</span>`:""}`
+;
+  $("#crumbs").innerHTML = `<span>${ctx}</span><span class="sep">/</span><b>${nav.crumb || "Painel"}</b>`;
+  $("#view").innerHTML = VIEWS[id]();
+  if (VIEWS[id].after) VIEWS[id].after();
+  $("#view").scrollIntoView({ block: "start" });
+
+Os badges saíram. Agora as 280 menções inline. Isso é delicado (risco de artefatos no texto), então vou fazer backup, rodar um script com regras ordenadas e verificar resíduos/artefatos.
+
+  Ran 1 shell command
+
+O cleanup de parênteses vazios quebrou os () do código (arrow functions). Vou restaurar e refazer sem essa regra perigosa, usando limpeza só com espaços horizontais (sem newline) e sem mexer em ():
+
+  Ran 1 shell command
+
+Sintaxe OK e 0 resíduos. Agora vou caçar artefatos (parênteses vazios em texto, separadores soltos, espaços duplos) e confirmar que o código não foi tocado:
+
+  Ran 1 shell command
+
+Encontrei alguns artefatos (dash solto —), <b></b> vazio, /) de "US06/US07"). Vou restaurar e melhorar o script para tratar: token com /US.., tags <b>US..</b>, e separadores — : · antes de US.
+
+  Ran 1 shell command
+
+Sintaxe OK, 0 resíduos. Revisando os artefatos antes problemáticos e procurando novos:
+
